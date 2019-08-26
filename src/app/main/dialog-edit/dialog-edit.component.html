@@ -1,0 +1,13 @@
+
+<ly-toolbar position="static" bg="primary" [elevation]="3">
+  <h6 lyTyp="title" style="flex-grow: 1">Edit Photo</h6>
+  <button color="primary:contrast" ly-button appearance="icon" (click)="dialogRef.close(false);">
+    <ly-icon>close</ly-icon>
+  </button>
+</ly-toolbar><br/>
+<div ly-dialog-content>
+  <div #parentCanvas>
+    <image-drawing #myDraw [editMode]="editMode" [src]="imageUrl" (onCancel)="close()" (onSave)="onSave($event)" [maxWidthCanvas]="maxWidthCanvas">
+    </image-drawing>
+  </div>
+</div>

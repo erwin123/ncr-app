@@ -1,0 +1,145 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ngx-easy-table/style.scss";
+@import "~@ng-select/ng-select/themes/material.theme.css";
+html {
+  height: 100%;
+}
+
+image-drawing .canvas-container {
+  width: 100% !important;
+}
+.canvas-container canvas {
+  width: 100% !important;
+}
+
+.imgResult {
+  width: 100%;
+  border: 1px solid #fff;
+}
+
+.form-container {
+  margin: 10px;
+}
+
+/* Photo Panel & Overlay */
+.photo-panel {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 3px);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.overlay:hover {
+  background: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.overlay div a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  border: 1px #fff solid;
+}
+.overlay div {
+  margin-top: 15%;
+}
+
+.photo-panel-div,
+.thumbnail-panel {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+/* Thumbnail Panel & Overlay */
+.overlay-thumbnail {
+  position: absolute;
+  width: 100%;
+  margin-top: 55px;
+}
+
+.overlay-thumbnail a {
+  text-decoration: none;
+  margin-right: 10px;
+}
+.icon-large{
+  font-size: 24px !important;
+}
+.flashit {
+  margin: 5px;
+  color: rgb(0, 0, 0);
+  -webkit-animation: flash linear 1s infinite;
+  animation: flash linear 1s infinite;
+}
+@-webkit-keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.btn-file {
+  display: block;
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  background: transparent;
+  cursor: pointer;
+}
+
+.upload-btn-wrapper input[type="file"] {
+  font-size: 20px;
+  position: absolute;
+  margin: 5px auto;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.upload-btn-wrapper button {
+  margin: 5px auto;
+  font-size: 16px;
+}
+input:disabled {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+textarea:disabled {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+select:disabled {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+[class*="y-disabled-"]  {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+button{
+    height: 40px !important;
+}

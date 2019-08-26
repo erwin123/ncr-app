@@ -1,0 +1,15 @@
+<h4 ly-dialog-title gutterBottom>Choose new pic</h4>
+<div ly-dialog-content>
+  <ly-radio-group #radioC="lyRadioGroup" [(ngModel)]="picChoosed">
+    <ly-radio style="width: 100%;" [checked]="d.Username === current" [value]="d" *ngFor="let d of listPic" [value]="d">
+      {{ d.PicName }}</ly-radio>
+  </ly-radio-group>
+</div>
+<ly-grid container justify="end" ly-dialog-actions>
+  <button ly-button bg="warn" (click)="dialogRefPic.close()">
+    <ly-icon>close</ly-icon> CANCEL
+  </button>&nbsp;
+  <button ly-button bg="primary" (click)="onSave($event)">
+    <ly-icon>check</ly-icon> CHANGE
+  </button>
+</ly-grid>

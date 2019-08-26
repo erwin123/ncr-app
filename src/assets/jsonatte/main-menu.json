@@ -1,0 +1,37 @@
+[
+    {
+        "Text": "Feed",
+        "Icon": "fas fa-stream",
+        "RuleName":"staff",
+        "ProjectType":"ALL",
+        "Path":"/main/trans/my-report"
+    },
+    {
+        "Text": "Statistic",
+        "Icon": "fas fa-tachometer-alt",
+        "RuleName":"staff",
+        "ProjectType":"ALL",
+        "Path":"/main/trans/landing"
+    },
+    {
+        "Text": "Building",
+        "Icon": "fas fa-building",
+        "RuleName":"staff",
+        "ProjectType":"BUILDING",
+        "Path":"/main/trans/building/1"
+    },
+    {
+        "Text": "Infra",
+        "Icon": "fas fa-road",
+        "RuleName":"staff",
+        "ProjectType":"INFRA",
+        "Path":"/main/trans/infra/2"
+    },
+    {
+        "Text": "Foundation",
+        "Icon": "fas fa-cubes",
+        "RuleName":"staff",
+        "ProjectType":"FOUNDATION",
+        "Path":"/main/trans/foundation/3"
+    }
+]

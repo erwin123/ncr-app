@@ -1,0 +1,18 @@
+<ly-grid container class="login">
+  <ly-grid item col="4 5@Medium 6@Small 12@XSmall">
+    <div class="login-container">
+      <img class="logo" src="assets/img/logo-white.png">
+      <span style="font-style:italic;color:rgb(85, 85, 85);float: right;">NCR Mobile Apps</span>
+      <form class="login-form" (ngSubmit)="login()">
+        
+        <ly-field fullWidth>
+            <input lyNativeControl placeholder="Username" [ngModelOptions]="{standalone: true}" [(ngModel)]="username">
+          </ly-field>
+        <ly-field fullWidth>
+          <input lyNativeControl placeholder="Password" [ngModelOptions]="{standalone: true}" [(ngModel)]="password" type="password" >
+        </ly-field>
+        <button ly-button raised bg="primary" fullWidth>Login</button>
+      </form>
+    </div>
+  </ly-grid>
+</ly-grid>

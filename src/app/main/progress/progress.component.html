@@ -1,0 +1,137 @@
+<div (click)="_location.back()" style="cursor:pointer;position: fixed;background: #ffe921;
+  color:#213071;border:1px solid #d1c23b;padding:10px;border-radius: 50%;margin-left:3px;z-index: 99;">
+  <i class="fas fa-arrow-left"></i>
+</div>
+<ly-grid container spacing="16 8@XSmall">
+  <ly-grid item col="6 12@XSmall">
+    <ly-card [class.late]="late==1">
+      <div class="form-container">
+        <div style="width: 100%;text-align: center;margin-top: 15px;font-style: italic;">
+          <div>{{value==100?'Done!': reportProgresses.ProgressStatus ==1 ? 'Paused':'In Progress'}}</div>
+          <div>
+            {{ (reportProgresses.ProgressStatus ==1 || reportProgresses.ProgressStatus ==2)? reportProgresses.Notes : ''}}
+          </div>
+          <div>{{remaining}}</div>
+        </div>
+        <progress-bar [progress]="value"
+          [color]="value==100?'#29ce70':reportProgresses.ProgressStatus ==1? '#ffcc00':'#213071'">
+        </progress-bar>
+        <!--Assign Date-->
+        <ly-field appearance="outlined" fullWidth>
+          <input disabled="disabled" lyNativeControl placeholder="Assign On"
+            [value]="ncrReport.AssignDate? ncrReport.AssignDate.split('T')[0]:''">
+        </ly-field>
+
+        <!--Root Cause-->
+        <ly-field appearance="outlined" fullWidth>
+          <input disabled="disabled" lyNativeControl placeholder="Root Cause" [value]="ncrReport.RootCause">
+        </ly-field>
+
+        <!--Description-->
+        <ly-field appearance="outlined" fullWidth>
+          <textarea disabled="disabled" lyNativeControl placeholder="Description" rows="2"
+            [value]="ncrReport.Description"></textarea>
+        </ly-field>
+        <ly-grid container>
+          <ly-grid item col="1 1@XSmall"></ly-grid>
+          <ly-grid item col="10 10@XSmall">
+            <div style="margin-bottom: 10px;" *ngIf="userRole.Role==='pic' && reportProgresses.ProgressStatus==0">
+              <ng5-slider [(value)]="value" [options]="options"></ng5-slider>
+            </div>
+          </ly-grid>
+          <ly-grid item col="1 1@XSmall"></ly-grid>
+        </ly-grid>
+        <!--Photo Panel-->
+        <div class="photo-panel-div" *ngIf="imgPath.length<1 && value == 100 && reportProgresses.ProgressStatus!=2">
+          <div class="overlay" (click)="fileInput.click();">
+            <div class="upload-btn-wrapper">
+              <button class="btn-file" (click)="$event.preventDefault();">
+                + PHOTO
+              </button>
+              <input type="file" accept="image/*" #fileInput name="attch" (change)="readUrlImg($event)"
+                style="display:none;" />
+            </div>
+          </div>
+          <img class="photo-panel" src="../../../assets/img/photo-panel.jpg" />
+        </div>
+        <!--Thumbnail-->
+        <div *ngIf="loadImg" class="flashit">Loading Image...</div>
+        <ly-grid container [spacing]="8" style="text-align: center;" *ngIf="imgPath.length>0 && value == 100">
+          <ly-grid item col="12" *ngFor="let img of imgPath; let i = index" class="thumbnail-panel">
+            <div class="overlay-thumbnail">
+              <a href="#" *ngIf="currentEnableMode" (click)="openEditor(i,img);$event.preventDefault();">
+                <button ly-button appearance="miniFab" raised bg="primary">
+                  <ly-icon class="icon-large">edit</ly-icon>
+                </button>
+              </a>
+              <a href="#" *ngIf="currentEnableMode" (click)="detachImage(i);$event.preventDefault();">
+                <button ly-button appearance="miniFab" raised bg="warn">
+                  <ly-icon class="icon-large">delete_forever</ly-icon>
+                </button>
+              </a>
+              <a href="#" *ngIf="!currentEnableMode" (click)="openEditor(i,img);$event.preventDefault();">
+                <button ly-button appearance="miniFab" raised bg="calm">
+                  <ly-icon class="icon-large">visibility</ly-icon>
+                </button>
+              </a>
+            </div>
+            <img class="imgResult" [src]="img" alt="" style="height: 150px;object-fit: cover;">
+          </ly-grid>
+        </ly-grid>
+        <!--Action-->
+        <ly-field appearance="outlined" fullWidth>
+          <textarea lyNativeControl  [disabled]="ncrReport.ReportStatus == 5" placeholder="Action Notes" rows="2" [(ngModel)]="actionNotes"></textarea>
+        </ly-field>
+        <!--Cost-->
+        <ly-field appearance="outlined" fullWidth *ngIf="userRole.Role === 'qs' && (ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 5)">
+          <input type="number" [disabled]="ncrReport.ReportStatus == 5" lyNativeControl placeholder="Total Cost (Est.)" [(ngModel)]="cost">
+        </ly-field>
+        <!--Delay-->
+        <ly-field appearance="outlined" fullWidth *ngIf="late == 1 && (ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 5)">
+          <ly-label>Delay Cause</ly-label>
+          <ly-select [disabled]="ncrReport.ReportStatus == 5" placeholder="Delay Cause" [(ngModel)]="delayCause">
+            <ly-option *ngFor="let opt of sla | filterEnum : 'EnumProp' : 'DelayCause'" [value]="opt.EnumValue">
+              {{opt.EnumText}}</ly-option>
+          </ly-select>
+          <ly-error>Required</ly-error>
+        </ly-field>
+        <span *ngIf="message" style="display:block;color:red;text-align: center;margin-bottom: 10px;">{{message}}</span>
+        <button *ngIf="userRole.Role==='pic' && value<100 && reportProgresses.ProgressStatus==0" (click)="onSubmit()"
+          style="width: 100%;" ly-button bg="primary" raised type="button">
+          <ly-icon>trending_up</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; UPDATE PROGRESS</span>
+        </button>
+        <button *ngIf="value==100 && reportProgresses.ProgressStatus!=2" (click)="onFinish()" style="width: 100%;"
+          ly-button bg="calm" raised type="button">
+          <ly-icon>check</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; FINISH</span>
+        </button>
+        <button
+          *ngIf="userRole.Role==='qs' && value<100 && (reportProgresses.ProgressStatus==0 && ncrReport.ReportProgresses.length > 0)"
+          style="width: 100%;" ly-button bg="warn" raised type="button" (click)="onHold()">
+          <ly-icon>pause</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; HOLD</span>
+        </button>
+        <button *ngIf="userRole.Role==='qs' && value<100 && reportProgresses.ProgressStatus==1" style="width: 100%;"
+          ly-button bg="primary" raised type="button" (click)="onContinue()">
+          <ly-icon>play_arrow</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; CONTINUE</span>
+        </button>
+        <button *ngIf="userRole.Role==='qs' && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4"
+          style="width: 100%;margin-bottom: 1em;" ly-button bg="primary" raised type="button" (click)="onReopen()">
+          <ly-icon>refresh</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; RE-OPEN</span>
+        </button>
+        <button *ngIf="userRole.Role==='qs' && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4" style="width: 100%;" ly-button
+          bg="calm" raised type="button" (click)="onClose()">
+          <ly-icon>done_outline</ly-icon>
+          <span [className]="classes.labelButton">&nbsp; CLOSE</span>
+        </button>
+      </div>
+
+      <br />
+    </ly-card>
+    <br />
+  </ly-grid>
+
+</ly-grid>

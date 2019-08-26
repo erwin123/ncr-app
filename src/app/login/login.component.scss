@@ -1,0 +1,22 @@
+.login{
+    background: url('../../assets/img/bg.jpg') no-repeat;
+    background-attachment: fixed;
+    background-position:bottom; 
+    height: 100vh;
+}
+.login-container{
+    margin: 130px 30px auto 30px;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.8);
+    padding:20px;
+    border-radius: 10px;
+}
+
+.login-container button{
+    margin-top:20px;
+    width: 100%;
+}
+
+.logo{
+    height: 50px;
+}

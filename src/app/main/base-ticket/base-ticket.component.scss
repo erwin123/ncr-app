@@ -1,0 +1,18 @@
+
+
+.autocomplete-panel {
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.4);
+  background: #fff;
+  position: absolute;
+  z-index: 10;
+  margin-top: -20px;
+  width: 90%;
+}
+
+.autocomplete-item {
+  padding: 7px;
+}
+
+.autocomplete-item:hover {
+  background: #b9c6ff;
+}

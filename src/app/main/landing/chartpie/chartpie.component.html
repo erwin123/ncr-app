@@ -1,0 +1,18 @@
+<div [className]="classes.item">
+  <ly-card>
+    <!-- <ly-card-content style="max-width:560px;height: 250px;"> -->
+    <ly-card-content [style.max-width]="maxWidth" [style.height]="height" style="margin-bottom: 20px;">
+      <h2 lyTyp="title" gutterBottom>{{title}}</h2>
+      <content-loader *ngIf="!data" [height]="height" [width]="maxWidth" primaryColor="#eaeaea" secondaryColor="#d1d1d1">
+        <svg:rect x="8" y="25" rx="2" ry="2" width="100%" height="200" />
+      </content-loader>
+      <ngx-charts-advanced-pie-chart *ngIf="data && isAdvanced==1" [scheme]="colorScheme" [results]="data" 
+        (select)="onSelect($event)">
+      </ngx-charts-advanced-pie-chart>
+      <ngx-charts-pie-chart *ngIf="data && isAdvanced==0" [view]="view"  [scheme]="colorScheme" [results]="data" [legend]="showLegend"
+      [labels]="showLabels" [explodeSlices]="explodeSlices" arcWidth="0.5" [doughnut]="doughnut" [gradient]="gradient"
+        (select)="onSelect($event)">
+      </ngx-charts-pie-chart>
+    </ly-card-content>
+  </ly-card>
+</div>

@@ -1,0 +1,130 @@
+<div (click)="clearFilter()" *ngIf="myReports.length != sourceReports.length" style="cursor:pointer;position: fixed;background: #ffe921;
+  color:#213071;padding:5px;border-radius: 15px;right:20px;top:10px;z-index: 99;">
+  Reset
+</div>
+
+<ly-grid container>
+  <ly-grid item col="2 4@XSmall" *ngFor="let item of myReports | groupBy:'ProjectType'">
+    <div [className]="classes.item">
+      <ly-card (click)="kpiClick(item)" style="cursor: pointer;">
+        <ly-grid container class="kpi-project">
+          <ly-grid item col="8 8@XSmall" style="text-align: center;font-weight: normal;">
+            <div [ngSwitch]="item.key">
+              <div *ngSwitchCase="'BUILDING'">
+                <div><i class="fas fa-building"></i></div>
+                <div style="font-size: 14px;">Building</div>
+              </div>
+              <div *ngSwitchCase="'INFRA'">
+                <div><i class="fas fa-road"></i></div>
+                <div style="font-size: 14px;">Infra</div>
+              </div>
+              <div *ngSwitchCase="'FOUNDATION'">
+                <div><i class="fas fa-cubes"></i></div>
+                <div style="font-size: 14px;">&nbsp;Foundation</div>
+              </div>
+            </div>
+          </ly-grid>
+          <ly-grid item col="4 4@XSmall" style="text-align: left;padding-left: 0 !important;">
+            <div>{{ item.value.length }}</div>
+          </ly-grid>
+        </ly-grid>
+      </ly-card>
+    </div>
+  </ly-grid>
+  <ly-grid item col="4 8@XSmall">
+    <div [className]="classes.itemSmall">
+      <ly-field fullWidth style="padding:0 !important;margin:0 !important;">
+        <input lyNativeControl placeholder="Search" [(ngModel)]="searchFilter" type='text' (input)="onSearchChange($event.target.value)">
+        <button ly-button appearance="icon" lySuffix>
+          <ly-icon>search</ly-icon>
+        </button>
+      </ly-field>
+    </div>
+  </ly-grid>
+  <ly-grid item col="2 4@XSmall">
+    <div [className]="classes.itemSmall">
+      <ly-checkbox [color]="'primary'" [(ngModel)]="lateFilter" (change)="chkLate($event)">Late 
+      </ly-checkbox>
+    </div>
+  </ly-grid>
+
+</ly-grid>
+
+<hr style="height:1px; border:none;  background-color:#e4e4e4;">
+<br />
+
+<ly-grid container spacing="8@XSmall">
+  <ly-grid item col="2 6@XSmall" *ngFor="let item of myReports | groupBy:'ReportStatus'">
+    <div [className]="classes.item">
+      <ly-card (click)="kpiClick(item);" style="cursor: pointer;">
+        <ly-grid container spacing="12@XSmall">
+          <ly-grid item col="6 6@XSmall" style="text-align: center;">
+            <div class="kpi">{{ item.value.length }} </div>
+            <div style="color:#d8d8d8;">Total</div>
+          </ly-grid>
+          <ly-grid item col="6 6@XSmall">
+            <div style="text-align: center;color:#fff;font-style: italic;" [ngSwitch]="item.key" [ngClass]="{'st-open': item.key==0,'st-ncr': item.key==1,'st-progress': item.key==2,'st-pause':
+              item.key==3,'st-solved': item.key==4,'st-close': item.key==5,'st-reject': item.key==7}">
+              <div *ngSwitchCase="0">
+                <div class="kpi fa-beat"><i class="fas fa-bullhorn"></i></div>
+                <div>Unverify</div>
+              </div>
+              <div *ngSwitchCase="1">
+                <div class="kpi"><i class="fas fa-marker"></i></div>
+                <div>Verified</div>
+              </div>
+              <div *ngSwitchCase="2">
+                <div class="kpi"><i class="fa fa-cog fa-spin fa-fw"></i></div>
+                <div>Proceed</div>
+              </div>
+              <div *ngSwitchCase="3">
+                <div class="kpi faa-horizontal"><i class="fas fa-clock"></i></div>
+                <div>Paused</div>
+              </div>
+              <div *ngSwitchCase="4">
+                <div class="kpi fa-beat"><i class="fas fa-vote-yea fa-fw"></i></div>
+                <div>Solved</div>
+              </div>
+              <div *ngSwitchCase="5">
+                <div class="kpi"><i class="fas fa-check-double"></i></div>
+                <div>Closed</div>
+              </div>
+              <div *ngSwitchCase="7">
+                <div class="kpi"><i class="fas fa-ban"></i></div>
+                <div>Rejected</div>
+              </div>
+            </div>
+          </ly-grid>
+        </ly-grid>
+      </ly-card>
+    </div>
+  </ly-grid>
+</ly-grid>
+<hr style="height:1px; border:none;  background-color:#e4e4e4;">
+<br />
+<ly-grid container spacing="8@XSmall" *ngIf="loader">
+  <ly-grid item col="3 12@XSmall" *ngFor="let loader of [0,1,2,3]">
+    <div [className]="classes.item">
+      <ly-card>
+        <content-loader height="365" width="400" primaryColor="#eaeaea" secondaryColor="#d1d1d1">
+          <svg:rect x="8" y="25" rx="2" ry="2" width="37" height="38" />
+          <svg:rect x="58" y="27" rx="2" ry="2" width="137" height="10" />
+          <svg:rect x="58" y="45" rx="2" ry="2" width="75" height="10" />
+          <svg:rect x="0" y="75" rx="2" ry="2" width="400" height="145" />
+          <svg:rect x="15" y="235" rx="2" ry="2" width="150" height="10" />
+          <svg:rect x="15" y="255" rx="2" ry="2" width="250" height="10" />
+          <svg:rect x="15" y="275" rx="2" ry="2" width="270" height="10" />
+        </content-loader>
+      </ly-card>
+    </div>
+
+  </ly-grid>
+</ly-grid>
+<ly-grid container spacing="8@XSmall" style="margin-bottom:10px;">
+  <ly-grid item col="3 12@XSmall" *ngFor="let rpt of myReports">
+    <div [className]="classes.item">
+      <app-stream-card [rpt]="rpt" [userRules]="userRules" [userRole]="userRole" style="cursor: pointer;">
+      </app-stream-card>
+    </div>
+  </ly-grid>
+</ly-grid>

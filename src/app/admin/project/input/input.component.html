@@ -1,0 +1,60 @@
+<ly-toolbar position="static" bg="primary" [elevation]="3">
+  <h6 lyTyp="title" style="flex-grow: 1">Add / Edit Project</h6>
+  <button color="primary:contrast" ly-button appearance="icon" (click)="dialogInputRef.close();">
+    <ly-icon>close</ly-icon>
+  </button>
+</ly-toolbar>
+<div ly-dialog-content>
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" [className]="classes.container">
+    <ly-field appearance="outlined" fullWidth>
+      <input lyNativeControl type="text" placeholder="Identity Auto" formControlName="Id">
+    </ly-field>
+    <ly-field appearance="outlined" fullWidth>
+      <input lyNativeControl type="text" placeholder="Name" formControlName="ProjectName">
+      <ly-error *ngIf="ProjectName.hasError('minlength')">Min 5 characters</ly-error>
+      <ly-error *ngIf="ProjectName.hasError('required')">Required</ly-error>
+      <ly-hint [align]="'after'">{{ ProjectName.value?.length || 0 }}/50</ly-hint>
+    </ly-field>
+
+    <ly-field appearance="outlined" fullWidth>
+      <ly-label>Project Type</ly-label>
+      <ly-select placeholder="Project Type" formControlName="ProjectType">
+        <ly-option *ngFor="let p of projType" [value]="p">{{ p }}</ly-option>
+      </ly-select>
+      <ly-error>Required</ly-error>
+    </ly-field>
+
+    <ly-field appearance="outlined" fullWidth>
+      <input lyNativeControl type="text" placeholder="Address" formControlName="ProjectAddress">
+      <ly-error>Required</ly-error>
+    </ly-field>
+
+    <ly-field appearance="outlined" fullWidth>
+      <ly-label>Status</ly-label>
+      <ly-select placeholder="Status" formControlName="ProjectStatus">
+        <ly-option *ngFor="let p of status" [value]="p.val">{{ p.text }}</ly-option>
+      </ly-select>
+      <ly-error>Required</ly-error>
+    </ly-field>
+
+    <ng-select [items]="locMaster" [addTag]="addTagLocFn" [hideSelected]="true" multiple="true" bindLabel="LocationName"
+      [(ngModel)]="selectedLocs" placeholder="Locations" [ngModelOptions]="{standalone: true}">
+    </ng-select>
+
+    <ng-select [items]="picMaster" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true"
+      multiple="true" bindLabel="PicName" [(ngModel)]="selectedPics" placeholder="Pics" [loading]="loadingPic"
+      [ngModelOptions]="{standalone: true}">
+    </ng-select>
+
+    <ng-select [items]="userMaster" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true"
+      multiple="true" bindLabel="Name" [(ngModel)]="selectedUsers" placeholder="User" [loading]="loadingUser"
+      [ngModelOptions]="{standalone: true}">
+    </ng-select>
+    <div *ngIf="message.length>0" style="text-align: center;color:red;">{{message}}</div>
+    <ly-grid container justify="end" ly-dialog-actions>
+      <button ly-button bg="primary" raised type="submit" style="width: 100%;max-width: 300px;">
+        <ly-icon>save</ly-icon>&nbsp;SAVE
+      </button>
+    </ly-grid>
+  </form>
+</div>

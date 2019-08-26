@@ -1,0 +1,14 @@
+[
+    {
+        "Text": "Info",
+        "Icon": "fas fa-question",
+        "RuleName":"staff",
+        "Path":"/main/trans/info"
+    },
+    {
+        "Text": "Logout",
+        "Icon": "fas fa-sign-out-alt",
+        "RuleName":"staff",
+        "Path":"/main/ancor"
+    }
+]

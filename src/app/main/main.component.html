@@ -1,0 +1,56 @@
+<block-ui>
+  <div ly-paper bg="background">
+    <ly-toolbar position="static" bg="primary" [elevation]="3">
+      <h6 lyTyp="title" [withClass]="classes.grow">
+        <a routerLink="/main/anchor" class="nav-link">
+          <img src="assets/img/moniqa.png" alt="" title="acst-logo" style="height:35px;">
+        </a>
+      </h6>
+      <div>
+        <div> {{title}}</div>
+        <div style="font-size: 10px;"> {{subtitle}}</div>
+      </div>
+
+      <button ly-button color="primary:contrast" appearance="icon" [lyMenuTriggerFor]="menu">
+        <ly-icon>more_vert</ly-icon>
+      </button>
+      <ng-template #menu let-M>
+        <ly-menu [ref]="M">
+          <button ly-button ly-menu-item *ngFor="let menu of sidemenus" (click)="goTo(menu.Path, menu.Text)">
+            <span><i [class]="menu.Icon"></i> {{ menu.Text }}</span>
+          </button>
+        </ly-menu>
+      </ng-template>
+    </ly-toolbar>
+    <ly-drawer-container [withClass]="classes.drawerContainer" [class.drawerContainerMobile]="mobileQuery.matches">
+      <ly-drawer #drwMain="lyDrawer" ly-paper [opened]="!mobileQuery.matches" position="before"
+        [mode]="mobileQuery.matches ? 'over' : 'side'" width="170px" [hasBackdrop]="mobileQuery.matches ? true : false"
+        bg="background:primary">
+        <div>
+          <ly-list>
+            <button [routerLink]="menu.Path" (click)="goTo(menu.Path, menu.Text)" ly-list-item
+              *ngFor="let menu of menus">
+              <span style="min-width: 35px;font-size: 20px"><i [class]="menu.Icon"></i></span>
+              <span style="text-align: left;">{{menu.Text}}</span>
+            </button>
+          </ly-list>
+        </div>
+      </ly-drawer>
+      <ly-drawer-content id="main-el" [withClass]="classes.drawerContentArea"
+        [@routerTransition]="page.activatedRouteData.state">
+        <router-outlet #page="outlet"></router-outlet>
+      </ly-drawer-content>
+    </ly-drawer-container>
+
+    <ly-toolbar position="static" [elevation]="3" class="menuDown" [class.menuDesktop]="!mobileQuery.matches">
+      <ly-grid container [spacing]="2" style="text-align: center;padding: 0px !important;">
+        <ly-grid item col *ngFor="let menu of menus" routerLinkActive="active-link">
+          <button [routerLink]="menu.Path" (click)="goTo(menu.Path, menu.Text)" routerLinkActive="active-link">
+            <span style="font-size:8vw;"><i [class]="menu.Icon"></i></span><br />
+            <!-- <span style="font-size:3vw;margin-top:3px;">{{menu.Text}}</span> -->
+          </button>
+        </ly-grid>
+      </ly-grid>
+    </ly-toolbar>
+  </div>
+</block-ui>

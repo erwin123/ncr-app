@@ -1,0 +1,15 @@
+<div [className]="classes.item">
+  <ly-card>
+    <ly-card-content [class.large]="isLarge == 1" [class.small]="isLarge == 0">
+      <h2 lyTyp="title" gutterBottom>{{title}}</h2>
+      <content-loader *ngIf="!data" height="300" width="400" primaryColor="#eaeaea" secondaryColor="#d1d1d1">
+        <svg:rect x="8" y="25" rx="2" ry="2" width="100%" height="200" />
+      </content-loader>
+      <ngx-charts-line-chart *ngIf="data" [scheme]="colorScheme" [results]="data" [xAxis]="showXAxis"
+        [yAxis]="showYAxis" [legend]="showLegend" [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" legendPosition="right" (select)="onSelect($event)"
+        legendTitle="Legend">
+      </ngx-charts-line-chart>
+    </ly-card-content>
+  </ly-card>
+</div>

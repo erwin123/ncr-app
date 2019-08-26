@@ -1,0 +1,54 @@
+<div class="loading" *ngIf="isLoading">
+  <ng-container *ngTemplateOutlet="loadingTemplate ? loadingTemplate : defaultLoading"></ng-container>
+</div>
+<div class="error" *ngIf="hasError">
+  <ng-container *ngTemplateOutlet="errorTemplate ? errorTemplate : defaultError"></ng-container>
+</div>
+
+<ng-template #defaultLoading>
+  <p>{{ loadingText }}</p>
+</ng-template>
+<ng-template #defaultError>
+  <p>{{ errorMessage }}</p>
+</ng-template>
+
+<canvas id="canvas"></canvas>
+<div class="toolbar" *ngIf="!isLoading">
+  <div class="tools">
+    <div class="row" *ngIf="editMode">
+      <i class="material-icons btn" [class.selected]="currentTool == 'brush'" (click)="selectTool('brush')"
+        title="Brush">brush</i>
+      <i class="material-icons btn" [class.selected]="currentTool == 'text'" (click)="addText()"
+        title="Text">text_fields</i>
+      <span class="size small btn" [class.selected]="currentSize == 'small'" (click)="selectDrawingSize('small')"
+        title="Taille: petit"></span>
+      <span class="size medium btn" [class.selected]="currentSize == 'medium'" (click)="selectDrawingSize('medium')"
+        title="Taille: moyen"></span>
+      <!-- <span class="size large btn" [class.selected]="currentSize == 'large'" (click)="selectDrawingSize('large')"
+        title="Taille: grand"></span> -->
+
+      <i class="material-icons btn" [class.disabled]="!canUndo" (click)="undo()" title="Annuler">undo</i>
+      <i class="material-icons btn" [class.disabled]="!canRedo" (click)="redo()" title="Refaire">redo</i>
+      <i class="material-icons btn" (click)="clearCanvas()" title="Effacer tout">delete</i>
+    </div>
+    <div class="row" *ngIf="editMode">
+      <div class="color black" [class.selected]="currentColor == 'black'" (click)="selectColor('black')" title="Noir">
+      </div>
+      <!-- <div class="color white" [class.selected]="currentColor == 'white'" (click)="selectColor('white')" title="Blanc">
+      </div> -->
+      <div class="color yellow" [class.selected]="currentColor == 'yellow'" (click)="selectColor('yellow')"
+        title="Jaune"></div>
+      <div class="color red" [class.selected]="currentColor == 'red'" (click)="selectColor('red')" title="Rouge"></div>
+      <!-- <div class="color green" [class.selected]="currentColor == 'green'" (click)="selectColor('green')" title="Vert">
+      </div> -->
+      <div class="color blue" [class.selected]="currentColor == 'blue'" (click)="selectColor('blue')" title="Bleu">
+      </div>
+    </div>
+    <div class="buttons">
+      <button *ngIf="editMode" ly-button raised bg="primary" (click)="saveImage(); $event.preventDefault();" fullWidth>Apply</button>
+      <button *ngIf="editMode" ly-button outlined raised color="primary" (click)="cancel(); $event.preventDefault();" shadowColor="primary" fullWidth>Cancel</button>
+      <button *ngIf="!editMode" ly-button outlined raised color="primary" (click)="cancel(); $event.preventDefault();" shadowColor="primary" fullWidth>Close</button>
+    </div>
+  </div>
+
+</div>

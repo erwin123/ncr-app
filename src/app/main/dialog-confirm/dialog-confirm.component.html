@@ -1,0 +1,12 @@
+<h4 ly-dialog-title gutterBottom>Confirmation</h4>
+<div ly-dialog-content>
+  {{Message}}
+</div>
+<ly-grid container justify="end" ly-dialog-actions>
+  <button ly-button bg="warn" (click)="dialogRefConfirm.close(0)">
+    <ly-icon>close</ly-icon> CANCEL
+  </button>&nbsp;
+  <button ly-button bg="primary" (click)="onYes($event)">
+    <ly-icon>check</ly-icon> CHANGE
+  </button>
+</ly-grid>

@@ -1,0 +1,24 @@
+<div style="margin: 6px 6px 6px 6px;">
+  <div [className]="classes.header">
+    <h1 lyTyp="display1" gutterBottom>
+      Project
+      <button ly-button outlined color="primary" (click)="showInput(null)"><ly-icon>add</ly-icon>ADD</button>
+    </h1>
+  </div>
+  <ly-grid container>
+    <ly-grid item col="12 12@XSmall">
+      <div [className]="classes.table">
+        <form style="padding: 0 10px 0 10px;">
+          <ly-field fullWidth>
+            <input lyNativeControl placeholder="Search" type='text' (input)="onChange($event)">
+            <button ly-button appearance="icon" lySuffix>
+              <ly-icon>search</ly-icon>
+            </button>
+          </ly-field>
+        </form>
+        <ngx-table (event)="eventEmitted($event)" selectRow="true" clickEvent="true" globalSearchEnabled="true" [data]="data" [columns]="columns" #table>
+        </ngx-table>
+      </div>
+    </ly-grid>
+  </ly-grid>
+</div>

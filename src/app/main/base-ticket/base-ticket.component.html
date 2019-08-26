@@ -1,0 +1,233 @@
+<div (click)="_location.back()" style="cursor:pointer;position: fixed;background: #ffe921;
+  color:#213071;border:1px solid #d1c23b;padding:12px;border-radius: 50%;margin-left:3px;z-index: 99;">
+  <i class="fas fa-arrow-left"></i>
+</div>
+<ly-grid container spacing="16 8@XSmall" style="margin-top: 0px;" (click)="filteredPics=[]">
+  <!--Form-->
+  <ly-grid item col="6 12@XSmall">
+    <ly-card *ngIf="loader">
+      <content-loader height="650" width="400" primaryColor="#eaeaea" secondaryColor="#d1d1d1">
+        <svg:rect x="0" y="0" rx="2" ry="2" width="400" height="150" />
+        <svg:rect x="10" y="200" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="250" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="300" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="350" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="400" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="450" rx="2" ry="2" width="380" height="30" />
+        <svg:rect x="10" y="500" rx="2" ry="2" width="380" height="30" />
+      </content-loader>
+    </ly-card>
+    <ly-card *ngIf="!loader">
+      <!--Photo Panel-->
+      <div class="photo-panel-div" *ngIf="imgPath.length<3 && currentEnableMode">
+        <div class="overlay" (click)="fileInput.click();">
+          <div class="upload-btn-wrapper">
+            <button class="btn-file" (click)="$event.preventDefault();">
+              + PHOTO
+            </button>
+            <input [attr.disabled]="currentEnableMode ? null : 'disabled'" type="file" accept="image/*" #fileInput
+              name="attch" (change)="readUrlImg($event)" style="display:none;" />
+          </div>
+        </div>
+        <img class="photo-panel" src="../../../assets/img/photo-panel.jpg" />
+      </div>
+      <!--Thumbnail 3x-->
+      <div *ngIf="loadImg" class="flashit">Loading Image...</div>
+      <ly-grid container [spacing]="8" style="text-align: center;" *ngIf="imgPath.length>0">
+
+        <ly-grid item col="4" *ngFor="let img of imgPath; let i = index" class="thumbnail-panel">
+          <div class="overlay-thumbnail">
+            <a href="#" *ngIf="currentEnableMode" (click)="openEditor(i,img);$event.preventDefault();">
+              <button ly-button appearance="miniFab" raised bg="primary">
+                <ly-icon class="icon-large">edit</ly-icon>
+              </button>
+            </a>
+            <a href="#" *ngIf="currentEnableMode" (click)="detachImage(i);$event.preventDefault();">
+              <button ly-button appearance="miniFab" raised bg="warn">
+                <ly-icon class="icon-large">delete_forever</ly-icon>
+              </button>
+            </a>
+            <a href="#" *ngIf="!currentEnableMode" (click)="openEditor(i,img);$event.preventDefault();">
+              <button ly-button appearance="miniFab" raised bg="calm">
+                <ly-icon class="icon-large">visibility</ly-icon>
+              </button>
+            </a>
+          </div>
+          <img class="imgResult" [src]="img" alt="" style="height: 100px;object-fit: cover;">
+        </ly-grid>
+      </ly-grid>
+      <!--Form-->
+      <div class="form-container">
+        <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" #formDirective="ngForm" style="position:relative;">
+          <!--Report Date-->
+          <ly-field appearance="outlined" fullWidth *ngIf="ncrReport.Id > 0">
+            <input disabled="disabled" lyNativeControl placeholder="Report Date"
+              [value]="ncrReport.CreateDate !== ''? ncrReport.CreateDate.split('T')[0]:''">
+          </ly-field>
+          <!--Project-->
+          <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('ProjectName') !=-1">
+            <ly-select placeholder="Select Project" formControlName="ProjectID">
+              <ly-option *ngFor="let opt of projects" [value]="opt.Id">
+                {{opt.ProjectName}}</ly-option>
+            </ly-select>
+            <ly-error>Required</ly-error>
+          </ly-field>
+
+          <!--Location-->
+          <ly-field appearance="outlined" fullWidth *ngIf="locations.length > 0 && onMyRule('Location') !=-1">
+            <ly-select placeholder="Select Location" formControlName="LocationID">
+              <ly-option *ngFor="let opt of locations" [value]="opt.Id">
+                {{opt.LocationName}}</ly-option>
+            </ly-select>
+            <ly-error>Required</ly-error>
+          </ly-field>
+          <ly-field appearance="outlined" fullWidth *ngIf="locations.length > 0 && onMyRule('LocationDetail') !=-1">
+            <input lyNativeControl type="text" placeholder="Location Detail" formControlName="LocationDetail">
+            <ly-hint>example : block 12, panel B</ly-hint>
+            <ly-error *ngIf="locationDetail.hasError('minlength')">Too short</ly-error>
+          </ly-field>
+
+          <!--Report By-->
+          <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('ReportBy') !=-1">
+            <ly-select placeholder="Report By" formControlName="ReportBy">
+              <ly-option *ngFor="let opt of enums | filterEnum : 'EnumProp' : 'Issued'" [value]="opt.EnumValue">
+                {{opt.EnumText}}</ly-option>
+            </ly-select>
+            <ly-error>Required</ly-error>
+          </ly-field>
+
+          <!--Founder-->
+          <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Founder') !=-1">
+            <input lyNativeControl type="text" placeholder="Founder" formControlName="Founder">
+            <ly-error>Required</ly-error>
+          </ly-field>
+
+          <!--Description-->
+          <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Description') !=-1">
+            <textarea lyNativeControl placeholder="Description" formControlName="Description"></textarea>
+            <ly-hint></ly-hint>
+            <ly-error *ngIf="description.hasError('minlength')">Too short</ly-error>
+          </ly-field>
+
+          <div id="qs-section" *ngIf="userRole.Role==='qs' || (userRole.Role==='pic' && ncrReport.Id>0)"
+            style="background: #f4f2ff;border: 1px solid #585183;margin-bottom: 10px;border-radius: 8px;padding:4%;">
+            <!--Matter-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Matters') !=-1">
+              <textarea lyNativeControl placeholder="Matter's" formControlName="Matters"></textarea>
+              <ly-error>Required</ly-error>
+            </ly-field>
+            <!--PreventiveAction-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('PreventiveAction') !=-1">
+              <textarea lyNativeControl placeholder="Preventive Action" formControlName="PreventiveAction"></textarea>
+              <ly-error>Required</ly-error>
+            </ly-field>
+            <!--CorrectiveAction-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('CorrectiveAction') !=-1">
+              <textarea lyNativeControl placeholder="Corrective Action" formControlName="CorrectiveAction"></textarea>
+              <ly-error>Required</ly-error>
+            </ly-field>
+            <!--Scope-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Scope') !=-1">
+              <ly-select placeholder="Scope" formControlName="Scope">
+                <ly-option *ngFor="let opt of enums | filterEnum : 'EnumProp' : 'Scope'" [value]="opt.EnumValue">
+                  {{opt.EnumText}}</ly-option>
+              </ly-select>
+              <ly-error>Required</ly-error>
+            </ly-field>
+
+            <!--Root Cause-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('RootCause') !=-1">
+              <ly-select placeholder="Root Cause" formControlName="RootCause">
+                <ly-option *ngFor="let opt of enums | filterEnum : 'EnumProp' : 'RootCause'" [value]="opt.EnumValue">
+                  {{opt.EnumText}}</ly-option>
+              </ly-select>
+              <ly-error>Required</ly-error>
+            </ly-field>
+
+            <!--PIC--->
+            <div>
+              <ly-field appearance="outlined" fullWidth *ngIf="pics.length > 0 && onMyRule('Pic') !=-1">
+                <input lyNativeControl type="text" placeholder="Pic" formControlName="Pic"
+                  (input)="onSearchPic($event.target.value)" (focus)="ddlShow = true">
+                <ly-error>Required</ly-error>
+              </ly-field>
+              <div class="autocomplete-panel" *ngIf="reportForm.get('Pic').value">
+                <div class="autocomplete-item" *ngFor="let pic of filteredPics" (click)="selectedPic(pic)">
+                  {{pic.PicName}}
+                </div>
+              </div>
+            </div>
+
+            <button *ngIf="onMyRule('SLA') !=-1" [style.background]="filterSLA==='SLA-L' ?'#29ce70':'#213071'"
+              [disabled]="ncrReport.ReportStatus == 0 ? null :'disabled'" ly-button bg="primary" raised type="button"
+              style="display: inline;"
+              (click)="filterSLA = 'SLA-L'; reportForm.get('SLA').setValue('');">Low</button>&nbsp;
+            <button *ngIf="onMyRule('SLA') !=-1" [style.background]="filterSLA==='SLA-M' ?'#29ce70':'#213071'"
+              [disabled]="ncrReport.ReportStatus == 0 ? null :'disabled'" ly-button bg="primary" raised type="button"
+              style="display: inline;"
+              (click)="filterSLA = 'SLA-M'; reportForm.get('SLA').setValue('');">Medium</button>&nbsp;
+            <button *ngIf="onMyRule('SLA') !=-1" [style.background]="filterSLA==='SLA-H' ?'#29ce70':'#213071'"
+              [disabled]="ncrReport.ReportStatus == 0 ? null :'disabled'" ly-button bg="primary" raised type="button"
+              style="display: inline;"
+              (click)="filterSLA = 'SLA-H'; reportForm.get('SLA').setValue('');">High</button>&nbsp;
+            <!--SLA-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('SLA') !=-1">
+              <ly-select placeholder="SLA" formControlName="SLA">
+                <ly-option *ngFor="let opt of enums | filterEnum : 'EnumProp' : filterSLA" [value]="opt.EnumValue">
+                  {{opt.EnumText}}</ly-option>
+              </ly-select>
+              <ly-error>Required</ly-error>
+            </ly-field>
+            <!--Notes-->
+            <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Notes') !=-1">
+              <input lyNativeControl type="text" placeholder="Notes" formControlName="Notes">
+            </ly-field>
+          </div>
+
+          <span *ngIf="message"
+            style="display:block;color:red;text-align: center;margin-bottom: 10px;">{{message}}</span>
+          <button *ngIf="onMyRule('ApproveTicket') ==-1 && ncrReport.ReportStatus == 0"
+            [style.display]="currentEnableMode ? 'inline':'none'" ly-button bg="primary" raised type="submit"
+            style="display: block;width: 100%;">SAVE</button>
+          <div *ngIf="ncrReport.ReportStatus == 0">
+            <button *ngIf="onMyRule('ApproveTicket') !=-1" ly-button bg="primary" raised type="button"
+              (click)="onApprove($event)" style="display: block;width: 100%;margin-bottom: 1em;">
+              <ly-icon>check</ly-icon>
+              <span [className]="classes.labelButton">APPROVE</span>
+            </button>
+            <button *ngIf="onMyRule('RejectTicket') !=-1 && ncrReport.Id>0" ly-button bg="warn" raised type="button"
+              (click)="onReject()" style="display: block;width: 100%;">
+              <ly-icon>clear</ly-icon>
+              <span [className]="classes.labelButton">REJECT</span>
+            </button>
+          </div>
+          <div *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 2) && (userRole.Role ==='qs')">
+            <button (click)="changePic()" ly-button bg="#ffcc00" raised type="button"
+              style="display: block;width: 100%;margin-bottom: 1em;">
+              <ly-icon>people</ly-icon>
+              <span [className]="classes.labelButton">&nbsp; CHANGE PIC</span>
+            </button>
+          </div>
+          <div
+            *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 2 || ncrReport.ReportStatus == 3 || ncrReport.ReportStatus == 5) && (userRole.Role ==='pic' || userRole.Role ==='qs') && ((ncrReport.Pic === userRole.Username || ncrReport.CreateBy !== userRole.Username) || userRole.Role ==='qs')">
+            <button (click)="goToProgress(ncrReport.Id)" ly-button bg="primary" raised type="button"
+              style="display: block;width: 100%;">
+              <ly-icon>build</ly-icon>
+              <span [className]="classes.labelButton" *ngIf="ncrReport.ReportStatus != 5">&nbsp; PROGRESS</span>
+              <span [className]="classes.labelButton" *ngIf="ncrReport.ReportStatus == 5">&nbsp; CLOSED NOTES</span>
+            </button>
+          </div>
+          <br />
+          <div *ngIf="ncrReport.ReportStatus == 5 && (userRole.Role ==='qs')">
+            <button (click)="printBastk(ncrReport.Id)" ly-button bg="#ffcc00" raised type="button"
+              style="display: block;width: 100%;margin-bottom: 1em;">
+              <ly-icon>print</ly-icon>
+              <span [className]="classes.labelButton">&nbsp; PRINT BAST</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </ly-card>
+    <br />
+  </ly-grid>
+</ly-grid>

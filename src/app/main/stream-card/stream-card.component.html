@@ -1,0 +1,66 @@
+<ly-card [class.late]="rpt.Late==1" style="min-height: 440px;">
+  <ly-grid container spacing="8@XSmall" (click)="viewTicket(rpt.Id)">
+    <ly-grid item col="1 1@XSmall">
+      <div [className]="classes.cardType">
+        <i class="fas fa-building" *ngIf="rpt.Project.ProjectType==='BUILDING'"></i>
+        <i class="fas fa-road" *ngIf="rpt.Project.ProjectType==='INFRA'"></i>
+        <i class="fas fa-cubes" *ngIf="rpt.Project.ProjectType==='FOUNDATION'"></i>
+      </div>
+    </ly-grid>
+    <ly-grid item col="9 9@XSmall">
+      <div [className]="classes.cardTitle">
+        {{rpt.Project.ProjectName}}
+        <div [className]="classes.cardSubTitle">
+          {{rpt.Location.LocationName}}
+        </div>
+      </div>
+    </ly-grid>
+    <ly-grid item col="2 2@XSmall">
+      <div style="background:#6567a5" *ngIf="rpt.ReportStatus==0" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Unverify</div>
+        <div><i class="fas fa-bullhorn"></i></div>
+      </div>
+      <div style="background:#003366" *ngIf="rpt.ReportStatus==1" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Verified</div>
+        <div><i class="fas fa-marker"></i></div>
+      </div>
+      <div style="background:#0071c5" *ngIf="rpt.ReportStatus==2" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Proceed</div>
+        <div><i class="fa fa-cog fa-spin fa-fw"></i></div>
+      </div>
+      <div style="background:#ec6231" *ngIf="rpt.ReportStatus==3" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Paused</div>
+        <div><i class="fas fa-clock"></i></div>
+      </div>
+      <div style="background:#9ccc42" *ngIf="rpt.ReportStatus==4" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Solve</div>
+        <div class="fa-beat"><i class="fas fa-vote-yea fa-fw"></i></div>
+      </div>
+      <div style="background:#00a51b" *ngIf="rpt.ReportStatus==5" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Close</div>
+        <div><i class="fas fa-check-double"></i></div>
+      </div>
+    </ly-grid>
+  </ly-grid>
+
+  <ly-card-media *ngIf="rpt.ReportPhotos.length>0 else elseBlock" [bgImg]="reportPhotoUrl+rpt.ReportPhotos[0].Filename"
+    title="rpt.ReportPhotos[0].Filename" (click)="viewTicket(rpt.Id)"></ly-card-media>
+  <ng-template #elseBlock>
+    <ly-card-media [bgImg]="reportNoPhotoUrl" title="No Picture" (click)="viewTicket(rpt.Id)"></ly-card-media>
+  </ng-template>
+
+  <ly-card-content (click)="viewTicket(rpt.Id)">
+    <progress-bar [progress]="value"
+      [color]="'#213071'">
+    </progress-bar>
+    <h6 lyTyp="subTitle" gutterBottom>Report Number {{rpt.ReportNo}} On {{rpt.CreateDate.split('T')[0]}}</h6>
+    <p lyTyp="body1">
+      {{rpt.Description.substring(0,60)+'...'}} <span style="font-style: italic; color: #130c7c;">More</span>
+    </p>
+  </ly-card-content>
+  <ly-card-actions disableActionSpacing *ngIf="rpt.ReportStatus == 5" style="text-align: center;">
+    <button ly-button outlined color="primary" (click)="printBastk(rpt.Id)">
+      <ly-icon>print</ly-icon> PRINT BAST
+    </button>
+  </ly-card-actions>
+</ly-card>
