@@ -61,6 +61,17 @@ export class AuthService {
       ));
   }
 
+  putUserLogin(obj: any){
+    let _headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = _headers.append('x-access-token', "ad");
+    return this.httpClient.put<any>(this.config.Api.global_api + "/users/", obj, { headers: headers }).pipe(
+      map(
+        res => {
+          return res;
+        }
+      ));
+  }
+
   postUser(obj: any) {
     let _headers = new HttpHeaders().set('Content-Type', 'application/json');
     const headers = _headers.append('x-access-token', "ad");

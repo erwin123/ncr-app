@@ -155,6 +155,7 @@ export class AuthCallbackComponent implements OnInit {
       this.ls.set("qs", res[1].map(m => m.Username));
       this.ls.set("enums", res[2]);
       this.ls.set("project", res[3]);
+      this.authService.putUserLogin({Username:aut[0].Username}).subscribe();
       if (aut[0].Role !== 'qs') {
         console.log(res[3]);
         this.ls.set("project", [...[], res[3].find(f => f.Id == aut[0].Project.Id)]);
