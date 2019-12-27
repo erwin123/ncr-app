@@ -109,7 +109,7 @@
             <ly-error *ngIf="description.hasError('minlength')">Too short</ly-error>
           </ly-field>
 
-          <div id="qs-section" *ngIf="userRole.Role==='qs' || (userRole.Role==='pic' && ncrReport.Id>0)"
+          <div id="qs-section" *ngIf="userRole.Role==='qs' || userRole.Role==='qs-pr' || (userRole.Role==='pic' && ncrReport.Id>0)"
             style="background: #f4f2ff;border: 1px solid #585183;margin-bottom: 10px;border-radius: 8px;padding:4%;">
             <!--Matter-->
             <ly-field appearance="outlined" fullWidth *ngIf="onMyRule('Matters') !=-1">
@@ -201,7 +201,7 @@
               <span [className]="classes.labelButton">REJECT</span>
             </button>
           </div>
-          <div *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 2) && (userRole.Role ==='qs')">
+          <div *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 2) && (userRole.Role ==='qs'|| userRole.Role ==='qs-pr')">
             <button (click)="changePic()" ly-button bg="#ffcc00" raised type="button"
               style="display: block;width: 100%;margin-bottom: 1em;">
               <ly-icon>people</ly-icon>
@@ -209,7 +209,7 @@
             </button>
           </div>
           <div
-            *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 2 || ncrReport.ReportStatus == 3 || ncrReport.ReportStatus == 5) && (userRole.Role ==='pic' || userRole.Role ==='qs') && ((ncrReport.Pic === userRole.Username || ncrReport.CreateBy !== userRole.Username) || userRole.Role ==='qs')">
+            *ngIf="(ncrReport.ReportStatus == 1 || ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 2 || ncrReport.ReportStatus == 3 || ncrReport.ReportStatus == 5) && (userRole.Role ==='pic' || userRole.Role ==='qs'|| userRole.Role ==='qs-pr') && ((ncrReport.Pic === userRole.Username || ncrReport.CreateBy !== userRole.Username) || userRole.Role ==='qs'|| userRole.Role ==='qs-pr')">
             <button (click)="goToProgress(ncrReport.Id)" ly-button bg="primary" raised type="button"
               style="display: block;width: 100%;">
               <ly-icon>build</ly-icon>
@@ -218,7 +218,7 @@
             </button>
           </div>
           <br />
-          <div *ngIf="ncrReport.ReportStatus == 5 && (userRole.Role ==='qs')">
+          <div *ngIf="ncrReport.ReportStatus == 5 && (userRole.Role ==='qs') && (userRole.Role ==='qs-pr')">
             <button (click)="printBastk(ncrReport.Id)" ly-button bg="#ffcc00" raised type="button"
               style="display: block;width: 100%;margin-bottom: 1em;">
               <ly-icon>print</ly-icon>

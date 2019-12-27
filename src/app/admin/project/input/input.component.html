@@ -46,6 +46,10 @@
       [ngModelOptions]="{standalone: true}">
     </ng-select>
 
+    <ng-select [items]="qsPrMaster" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true"
+      multiple="true" bindLabel="Name" [(ngModel)]="selectedQsPr" placeholder="QC Project" [loading]="loadingQsPr"
+      [ngModelOptions]="{standalone: true}">
+    </ng-select>
     <ng-select [items]="userMaster" [multiple]="true" [closeOnSelect]="false" [hideSelected]="true"
       multiple="true" bindLabel="Name" [(ngModel)]="selectedUsers" placeholder="User" [loading]="loadingUser"
       [ngModelOptions]="{standalone: true}">

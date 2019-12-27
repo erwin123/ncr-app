@@ -111,6 +111,9 @@ export class ProgressComponent implements OnInit {
       case "qs":
         criteria = { Id: ReportID }
         break;
+      case "qs-pr":
+        criteria = { Id: ReportID }
+        break;
       case "pic":
         //criteria = { Op: "OR", Prop: [{ Pic: this.userRole.Username }, { CreateBy: this.userRole.Username }] }
         criteria = { Id: ReportID, Pic: this.userRole.Username }

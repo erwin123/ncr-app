@@ -77,8 +77,8 @@ export class BaseTicketComponent implements OnInit {
     RootCause: new FormControl('', Validators.required),
     Scope: new FormControl('', Validators.required),
     SLA: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    PreventiveAction:new FormControl('', Validators.required),
-    CorrectiveAction:new FormControl('', Validators.required),
+    PreventiveAction: new FormControl('', Validators.required),
+    CorrectiveAction: new FormControl('', Validators.required),
     //DelayCause: new FormControl(''),
     Description: new FormControl('', [
       Validators.required,
@@ -109,6 +109,7 @@ export class BaseTicketComponent implements OnInit {
     this.qs = this.ls.get("qs");
     this.userRules = this.ls.get("rules").filter(f => f.Ui === "base-ticket");
     this.config = this.master.getConfig();
+    
   }
 
   ngOnInit() {
@@ -147,6 +148,7 @@ export class BaseTicketComponent implements OnInit {
           if (p) {
             this.bindLocation(p);
             this.bindDDLPic(p);
+            
             //this.pics = this.pics.filter(f => f.ProjectID == p);
           }
         });
@@ -293,14 +295,17 @@ export class BaseTicketComponent implements OnInit {
 
   onReject() {
     this.stateService.setBlocking(1);
-    if (!this.ncrReport.Notes || this.ncrReport.Notes === "") {
+    if (this.reportForm.get("Notes").value === "") {
       this.message = "Please fill reject reason on Notes!";
+      this.stateService.setBlocking(0);
       setTimeout(() => {
         this.message = "";
       }, 5000);
       return;
     } else {
+      this.ncrReport.Notes = this.reportForm.get("Notes").value;
       this.ncrReport.ReportStatus = 7;
+      this.ncrReport.ActionBy = this.userRole.Username;
       this.transact.putReport(this.ncrReport).subscribe(d => {
         this.showAlert("Report Rejected!");
       })
@@ -327,6 +332,9 @@ export class BaseTicketComponent implements OnInit {
     let criteria;
     switch (this.userRole.Role) {
       case "qs":
+        criteria = { Id: ReportID }
+        break;
+      case "qs-pr":
         criteria = { Id: ReportID }
         break;
       case "pic":
@@ -360,7 +368,7 @@ export class BaseTicketComponent implements OnInit {
       //give time to bind location first
       //setTimeout(() => {
       this.resetForm(this.reportForm, this.ncrReport);
-      if (this.userRole.Role === "qs" && this.ncrReport.ReportStatus == 0) {
+      if ((this.userRole.Role === "qs" || this.userRole.Role === "qs-pr") && this.ncrReport.ReportStatus == 0) {
         this.reportForm.get("Notes").enable();
         this.reportForm.get("Matters").enable();
         this.reportForm.get("PreventiveAction").enable();
@@ -550,7 +558,7 @@ export class BaseTicketComponent implements OnInit {
       return;
     }
 
-    if (!this.pics.find(f => f.PicName === this.reportForm.get('Pic').value) && this.userRole.Role === 'qs') {
+    if (!this.pics.find(f => f.PicName === this.reportForm.get('Pic').value) && (this.userRole.Role === 'qs' || this.userRole.Role === 'qs-pr')) {
       this.message = this.reportForm.get('Pic').value + " not registered on selected project";
       if (this.ncrReport.ReportStatus = 1) {
         this.ncrReport.ReportStatus = 0;
@@ -603,7 +611,7 @@ export class BaseTicketComponent implements OnInit {
           this.ncrReport.ReportPhotos = resultUpload;
           this.ncrReport.SLA = this.reportForm.get('SLA').value;
 
-          if (this.userRole.Role === "qs") {
+          if (this.userRole.Role === "qs" || this.userRole.Role === "qs-pr") {
             this.ncrReport.ReportStatus = 1;
             this.ncrReport.Pic = this.pics.find(f => f.PicName === this.reportForm.get('Pic').value).Username;
             this.ncrReport.AssignDate = moment().format('YYYY-MM-DD HH:mm:ss');

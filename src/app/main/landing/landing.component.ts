@@ -32,23 +32,29 @@ export class LandingComponent implements OnInit {
   reportCost = [];
   reportDelay = [];
   ddlProject = [];
-  ddlYear=[];
+  ddlYear = [];
   userRole;
   userRules;
   ls = new SecureLS();
   selectedProject;
   selectFormControl = new FormControl('');
   isDirty = false;
-  constructor(private transact: TransactService, private theme: LyTheme2, private excelService:ExcelService) {
+  projects = [];
+  constructor(private transact: TransactService, private theme: LyTheme2, private excelService: ExcelService) {
     this.userRole = this.ls.get("user");
     this.userRules = this.ls.get("rules").filter(f => f.Ui === "stream-ticket");
+    this.projects = this.ls.get("project");
   }
 
   ngOnInit() {
     let criteria;
+    let eachProject = this.projects[0];
     switch (this.userRole.Role) {
       case "qs":
         criteria = {}
+        break;
+      case "qs-pr":
+        criteria = { ProjectID: eachProject.Id }
         break;
       case "pic":
         criteria = { Pic: this.userRole.Username }
@@ -89,7 +95,7 @@ export class LandingComponent implements OnInit {
     });
   }
 
-  exportExcel(){
+  exportExcel() {
     this.excelService.exportAsExcelFile(this.sourceReports, "export_raw_" + new Date().toISOString().split('T')[0] + "_");
   }
 

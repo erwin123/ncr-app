@@ -18,19 +18,32 @@ export class AuthCallbackComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => this.authService.completeAuthentication()
       .then(() => {
-        //this.insertingUser(this.authService.getClaims());
         localStorage.removeItem("rules");
         localStorage.removeItem("user");
         localStorage.removeItem("enums");
         localStorage.removeItem("project");
         localStorage.removeItem("qs");
+        localStorage.removeItem("qs-pr");
         localStorage.removeItem("deviceInfo");
         localStorage.removeItem("memp");
         localStorage.removeItem("_secure__ls__metadata");
 
         this.authService.getUserLogin({ Username: this.authService.getClaims().name }).subscribe(aut => {
           if (aut[0]) {
-            if (aut[0].Project || aut[0].Role === 'qs') {
+            let roleFromClaim = "";
+            //console.log(this.authService.getClaims().role.find(f=>f==="pic" || f ==="qs" || f=== "qs-pr" || f==="user"));
+            if (Array.isArray(this.authService.getClaims().role))
+              roleFromClaim = this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") ? this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") : "none";
+            else
+              roleFromClaim = this.authService.getClaims().role;
+            console.log(roleFromClaim);
+            if (aut[0].Project || roleFromClaim === 'qs') {
+              aut[0].Role = roleFromClaim;
+              //console.log(this.authService.getClaims().role.find(f=>f==="pic" || f ==="qs" || f=== "qs-pr" || f==="user"));
+              // if (Array.isArray(this.authService.getClaims().role))
+              //   aut[0].Role = this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") ? this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") : "none";
+              // else
+              //   aut[0].Role = this.authService.getClaims().role;
               this.afterLoggedIn(aut);
             } else {
               this.message = "Your account generated, please contact your Subordinary to actived.";
@@ -39,96 +52,59 @@ export class AuthCallbackComponent implements OnInit {
             this.insertingUser(this.authService.getClaims());
           }
         });
-
-        // else {
-        //   this.router.navigate(['main/trans/my-report']);
-        // }
       })
       .catch((ex) => this.authService.startAuthentication()), 100);
-
-    // if (!this.authService.isLoggedIn()) {
-    //   setTimeout(() => this.authService.completeAuthentication()
-    //     .then(() => {
-    //       this.insertingUser(this.authService.getClaims());
-    //     })
-    //     .catch((ex) => this.authService.startAuthentication()), 100)
-    // } else {
-    //   if (!this.ls.get("user")
-    //     || !this.ls.get("rules")
-    //     || !this.ls.get("qs")
-    //     || !this.ls.get("enums")) {
-    //     this.authService.getUserLogin({ Username: this.authService.getClaims().name }).subscribe(aut => {
-    //       if (aut[0]) {
-    //         if (aut[0].Project || aut[0].Role === 'qs') {
-    //           this.afterLoggedIn(aut);
-    //         } else {
-    //           this.message = "Your account generated, please contact your Subordinary to actived.";
-    //         }
-    //       } else {
-    //         this.insertingUser(this.authService.getClaims());
-    //       }
-    //     });
-    //   } else {
-    //     this.router.navigate(['main/trans/my-report']);
-    //   }
-    // }
   }
 
   insertingUser(claims) {
-    this.authService.getUserLogin({ Username: claims.name }).subscribe(aut => {
-      if (aut.length > 0) {
-        this.afterLoggedIn(aut);
-      } else {
-        if (claims.role === "qs") {
-          this.authService.postUser(this.setObjUser(claims, "qs")).subscribe(i => {
-            this.afterLoggedIn([...[], i]);
-            //this.router.navigate(['main/trans/my-report']);
-          });
-        } else if (claims.role === "user" || claims.role === "pic") {
-          this.authService.postUser(this.setObjUser(claims, claims.role)).subscribe(i => {
-            this.message = "Your account generated, please contact your Subordinary to actived ";
-          });
-          if (claims.role === "pic") {
-            this.authService.postPic({
-              RowStatus: 1,
-              Username: claims.name,
-              PicName: claims.FullName.length > 0 ? claims.FullName : claims.name,
-              ProjectID: null,
-              CreateBy: claims.name,
-              CreateDate: moment().format('YYYY-MM-DD HH:mm:ss')
-            }).subscribe(p => {
-              this.message = this.message + "(As PIC Project).";
-            })
-          }
-        }
-        else if (claims.role.find(f => f === "pic" || f === "user")) {
-          this.authService.postUser(this.setObjUser(claims, claims.role.find(f => f === "pic" || f === "user"))).subscribe(i => {
-            this.message = "Your account generated, please contact your Subordinary to actived ";
-          });
-          if (claims.role.find(f => f === "pic")) {
-            this.authService.postPic({
-              RowStatus: 1,
-              Username: claims.name,
-              PicName: claims.FullName.length > 0 ? claims.FullName : claims.name,
-              ProjectID: null,
-              CreateBy: claims.name,
-              CreateDate: moment().format('YYYY-MM-DD HH:mm:ss')
-            }).subscribe(p => {
-              this.message = this.message + "(As PIC Project).";
-            })
-          }
-        } else if (claims.role.find(f => f === "qs")) {
-          this.authService.postUser(this.setObjUser(claims, "qs")).subscribe(i => {
-            this.afterLoggedIn([...[], i]);
-            //this.router.navigate(['main/trans/my-report']);
+    //for multi role
+    if (Array.isArray(claims.role)) {
+      if (claims.role.find(f => f === "qs")) {
+        this.authService.postUser(this.setObjUser(claims, "qs")).subscribe(i => {
+          this.afterLoggedIn([...[], i]);
+        });
+      }
+      else {
+        this.authService.postUser(this.setObjUser(claims, claims.role.find(f => f === "pic" || f === "user" || f === "qs-pr"))).subscribe(i => {
+          this.message = "Your account generated, please contact your Subordinary to actived ";
+        });
+        if (claims.role.find(f => f === "pic")) {
+          this.postPic(claims, cb => {
+            this.message = cb;
           });
         }
       }
-    });
+    } else {
+      if (claims.role === "qs") {
+        this.authService.postUser(this.setObjUser(claims, "qs")).subscribe(i => {
+          this.afterLoggedIn([...[], i]);
+        });
+      } else {
+        this.authService.postUser(this.setObjUser(claims, claims.role)).subscribe(i => {
+          this.message = "Your account generated, please contact your Subordinary to actived ";
+        });
+        if (claims.role === "pic") {
+          this.postPic(claims, cb => {
+            this.message = cb;
+          });
+        }
+      }
+    }
   }
 
+  postPic(claims, callback) {
+    this.authService.postPic({
+      RowStatus: 1,
+      Username: claims.name,
+      PicName: claims.FullName.length > 0 ? claims.FullName : claims.name,
+      ProjectID: null,
+      CreateBy: claims.name,
+      CreateDate: moment().format('YYYY-MM-DD HH:mm:ss')
+    }).subscribe(p => {
+      callback(this.message + "(As PIC Project).");
+    })
+  }
   setObjUser(claims, role) {
-    console.log(claims);  
     return {
       RowStatus: 1,
       Username: claims.name,
@@ -144,7 +120,6 @@ export class AuthCallbackComponent implements OnInit {
 
   afterLoggedIn(aut) {
     this.ls.set("user", aut[0]);
-
     forkJoin(
       this.initial.getMasterRules({ Role: aut[0].Role }),
       this.authService.getUserLogin({ Role: "qs" }),
@@ -155,9 +130,8 @@ export class AuthCallbackComponent implements OnInit {
       this.ls.set("qs", res[1].map(m => m.Username));
       this.ls.set("enums", res[2]);
       this.ls.set("project", res[3]);
-      this.authService.putUserLogin({Username:aut[0].Username}).subscribe();
+      this.authService.putUserLogin({ Username: aut[0].Username, Role:aut[0].Role, UpdateDate:moment().format('YYYY-MM-DD HH:mm:ss') }).subscribe();
       if (aut[0].Role !== 'qs') {
-        console.log(res[3]);
         this.ls.set("project", [...[], res[3].find(f => f.Id == aut[0].Project.Id)]);
       }
     }, err => { }, () => { this.router.navigate(['/main/trans/my-report']); })

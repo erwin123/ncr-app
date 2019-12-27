@@ -67,7 +67,7 @@ export class TransactService {
   }
 
   postUpload(fileToUpload: File, nameTag: string) {
-    let token = JSON.parse(localStorage.getItem('currentUser'));
+    //let token = JSON.parse(localStorage.getItem('currentUser'));
     let _headers = new HttpHeaders().set('x-access-token', "ad");
     const formData: FormData = new FormData();
     formData.append(nameTag, fileToUpload, fileToUpload.name);

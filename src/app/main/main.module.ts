@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InfraComponent } from '../main/infra/infra.component';
-import { FoundationComponent } from '../main/foundation/foundation.component';
 import { InfoComponent } from '../main/info/info.component';
 import { MainRoutingModule } from './main-routing.module';
 import { ChartbarComponent } from './landing/chartbar/chartbar.component';
@@ -23,8 +21,6 @@ import { ChartlineComponent } from './landing/chartline/chartline.component';
 
 @NgModule({
   declarations: [
-    InfraComponent,
-    FoundationComponent,
     InfoComponent,
     LandingComponent,
     ChartbarComponent,

@@ -1,4 +1,4 @@
-import { Component, OnInit,AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TransactService } from 'src/app/services/transact.service';
 import { StateService } from 'src/app/services/state.service';
 import { LyTheme2 } from '@alyle/ui';
@@ -22,7 +22,7 @@ const styles = () => ({
   templateUrl: './stream-task.component.html',
   styleUrls: ['./stream-task.component.scss']
 })
-export class StreamTaskComponent implements OnInit,AfterViewInit {
+export class StreamTaskComponent implements OnInit, AfterViewInit {
   readonly classes = this.theme.addStyleSheet(styles);
   myReports = [];
   sourceReports = [];
@@ -36,19 +36,23 @@ export class StreamTaskComponent implements OnInit,AfterViewInit {
   deviceType = 0; //0: mobile, 1:desktop, 2:tablet
   lateFilter = false;
   searchFilter = "";
+  projects=[];
   readonly VAPID_PUBLIC_KEY = "BKNBVSiQL0_ncDMju-7aVRrr9U98jhOzGsukMF097iPgajXf9CE9YshsHIycCQfRBtk_lpJ5w_vTlAsD1rRmYdE";
-  
+
   constructor(private deviceService: DeviceDetectorService, private swPush: SwPush,
     private transact: TransactService, private theme: LyTheme2, private stateService: StateService) {
+
     this.userRole = this.ls.get("user");
+    console.log(this.userRole);
     this.userRules = this.ls.get("rules").filter(f => f.Ui === "stream-ticket");
     this.deviceInfo = this.ls.get("deviceInfo");
     this.sla = this.ls.get("enums");
+    this.projects = this.ls.get("project");
   }
   ngAfterViewInit() {
     setTimeout(() => {
-      this.stateService.currentScrollPosition.subscribe(sc=>{
-        if(sc>0){
+      this.stateService.currentScrollPosition.subscribe(sc => {
+        if (sc > 0) {
           document.getElementById("main-el").scrollTop = sc;
         }
       })
@@ -65,19 +69,19 @@ export class StreamTaskComponent implements OnInit,AfterViewInit {
       if (s) {
         this.myReports = s;
         this.loader = false;
-        this.stateService.currentBulkNcr.subscribe(o =>{
+        this.stateService.currentBulkNcr.subscribe(o => {
           this.sourceReports = o;
         });
-        
+
       } else {
-        this.fetchData(res=>{
+        this.fetchData(res => {
           this.sourceReports = res;
           this.stateService.setBulkNcr(res);
           this.myReports = res;
           this.loader = false;
         })
       }
-      
+
     })
 
     this.transact.getPushNotif({ Username: this.userRole.Username, DeviceType: this.deviceType }).subscribe(res => {
@@ -103,9 +107,13 @@ export class StreamTaskComponent implements OnInit,AfterViewInit {
 
   fetchData(callback) {
     let criteria;
+    let eachProject = this.projects[0];
     switch (this.userRole.Role) {
       case "qs":
         criteria = {}
+        break;
+      case "qs-pr":
+        criteria = { ProjectID : eachProject.Id}
         break;
       case "pic":
         criteria = { Op: "OR", Prop: [{ Pic: this.userRole.Username }, { CreateBy: this.userRole.Username }] }

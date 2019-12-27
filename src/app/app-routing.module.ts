@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './main/main.component';
-import { LoginComponent } from './login/login.component';
 
 import { AuthguardService } from './services/authguard.service';
 import { AuthCallbackComponent } from './auth-callback/auth-callback.component';
 
 
 const routes: Routes = [
-  // { path: 'login', component: LoginComponent, data: { state: 'login' } },
   {
     path: 'auth-callback',
     component: AuthCallbackComponent

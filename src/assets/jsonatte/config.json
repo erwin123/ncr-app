@@ -3,8 +3,8 @@
     "Version":"0.0.0.1",
     "WebMainAddress": "http://localhost:4200/",
     "AuthProtocol": {
-        "LoginAddress": "http://heimdal.acset.co/",
-        "ChangePasswordAddress": "http://heimdal.acset.co/User/ChangePassword",
+        "LoginAddress": "https://sso-beta.acset.co/",
+        "ChangePasswordAddress": "https://sso-beta.acset.co/User/ChangePassword",
         "client_id": "ncr_ui",
         "redirect_uri" :"#/auth-callback#",
         "response_type": "id_token token",
@@ -13,9 +13,9 @@
         "loadUserInfo": true
     },
     "ApiDev":{
-        "global_api":"http://localhost:3003/api",
-        "global_attachment":"http://localhost:3003/attachment/",
-        "global_img":"http://localhost:3003/img/"
+        "global_api":"https://api-ncr.acset.co/api",
+        "global_attachment":"https://api-ncr.acset.co/attachment/",
+        "global_img":"https://api-ncr.acset.co/img/"
     },
     "ApiProd":{
         "global_api":"https://api-ncr.acset.co/api",
@@ -23,8 +23,8 @@
         "global_img":"http://localhost:3003/img/"
     },
     "Api":{
-        "global_api":"http://localhost:3003/api",
-        "global_attachment":"http://localhost:3003/attachment/",
-        "global_img":"http://localhost:3003/img/"
+        "global_api":"https://api-ncr.acset.co/api",
+        "global_attachment":"https://api-ncr.acset.co/attachment/",
+        "global_img":"https://api-ncr.acset.co/img/"
     }
 }

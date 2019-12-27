@@ -40,6 +40,10 @@
         <div [className]="classes.cardSubStatus">Close</div>
         <div><i class="fas fa-check-double"></i></div>
       </div>
+      <div style="background:#a50000" *ngIf="rpt.ReportStatus==7" [className]="classes.cardStatus">
+        <div [className]="classes.cardSubStatus">Reject</div>
+        <div><i class="fas fa-ban"></i></div>
+      </div>
     </ly-grid>
   </ly-grid>
 
@@ -50,8 +54,7 @@
   </ng-template>
 
   <ly-card-content (click)="viewTicket(rpt.Id)">
-    <progress-bar [progress]="value"
-      [color]="'#213071'">
+    <progress-bar [progress]="value" [color]="'#213071'">
     </progress-bar>
     <h6 lyTyp="subTitle" gutterBottom>Report Number {{rpt.ReportNo}} On {{rpt.CreateDate.split('T')[0]}}</h6>
     <p lyTyp="body1">

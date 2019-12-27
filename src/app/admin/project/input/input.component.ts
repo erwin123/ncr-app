@@ -45,12 +45,15 @@ export class InputComponent implements OnInit {
   ls = new SecureLS();
   selectedPics: any[] = [];
   selectedUsers: any[] = [];
+  selectedQsPr: any[] = [];
   addedPic;
   picMaster: any[] = [];
   userMaster: any[] = [];
+  qsPrMaster: any[] = [];
   message: string = "";
   loadingPic=true;
   loadingUser=true;
+  loadingQsPr=true;
   constructor(@Inject(LY_DIALOG_DATA) public data: any, private theme: LyTheme2
     , public dialogInputRef: LyDialogRef, public master: InitialService) {
     this.userRole = this.ls.get("user");
@@ -69,6 +72,9 @@ export class InputComponent implements OnInit {
       if (this.obj.Users.length > 0) {
         this.selectedUsers = [...this.obj.Users]
       }
+      if (this.obj.QsPr.length > 0) {
+        this.selectedQsPr = [...this.obj.QsPr]
+      }
     }
     this.exampleLocMaster.forEach((c, i) => {
       this.locMaster.push({ Id: i, LocationName: c });
@@ -80,6 +86,10 @@ export class InputComponent implements OnInit {
     this.master.getMasterUser({ ProjectId: null, Role:"user" }).subscribe(p => {
       this.userMaster = p;
       this.loadingUser =false;
+    })
+    this.master.getMasterUser({ ProjectId: null, Role:"qs-pr" }).subscribe(p => {
+      this.qsPrMaster = p;
+      this.loadingQsPr =false;
     })
   }
   get ProjectName() {
@@ -131,6 +141,7 @@ export class InputComponent implements OnInit {
         this.obj.RowStatus = 1;
         this.obj.Pics = this.selectedPics;
         this.obj.Users = this.selectedUsers;
+        this.obj.QsPr = this.selectedQsPr;
         this.obj.Locations = this.selectedLocs.map(m => { m.CreateBy = this.userRole.Username; return m });
         if (this.obj.Id > 0) {
           this.obj.UpdateDate = moment().format('YYYY-MM-DD HH:mm:ss'),

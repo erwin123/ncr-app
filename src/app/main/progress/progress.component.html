@@ -83,7 +83,7 @@
           <textarea lyNativeControl  [disabled]="ncrReport.ReportStatus == 5" placeholder="Action Notes" rows="2" [(ngModel)]="actionNotes"></textarea>
         </ly-field>
         <!--Cost-->
-        <ly-field appearance="outlined" fullWidth *ngIf="userRole.Role === 'qs' && (ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 5)">
+        <ly-field appearance="outlined" fullWidth *ngIf="(userRole.Role==='qs' || userRole.Role==='qs-pr') && (ncrReport.ReportStatus == 4 || ncrReport.ReportStatus == 5)">
           <input type="number" [disabled]="ncrReport.ReportStatus == 5" lyNativeControl placeholder="Total Cost (Est.)" [(ngModel)]="cost">
         </ly-field>
         <!--Delay-->
@@ -107,22 +107,22 @@
           <span [className]="classes.labelButton">&nbsp; FINISH</span>
         </button>
         <button
-          *ngIf="userRole.Role==='qs' && value<100 && (reportProgresses.ProgressStatus==0 && ncrReport.ReportProgresses.length > 0)"
+          *ngIf="(userRole.Role==='qs' || userRole.Role==='qs-pr') && value<100 && (reportProgresses.ProgressStatus==0 && ncrReport.ReportProgresses.length > 0)"
           style="width: 100%;" ly-button bg="warn" raised type="button" (click)="onHold()">
           <ly-icon>pause</ly-icon>
           <span [className]="classes.labelButton">&nbsp; HOLD</span>
         </button>
-        <button *ngIf="userRole.Role==='qs' && value<100 && reportProgresses.ProgressStatus==1" style="width: 100%;"
+        <button *ngIf="(userRole.Role==='qs' || userRole.Role==='qs-pr') && value<100 && reportProgresses.ProgressStatus==1" style="width: 100%;"
           ly-button bg="primary" raised type="button" (click)="onContinue()">
           <ly-icon>play_arrow</ly-icon>
           <span [className]="classes.labelButton">&nbsp; CONTINUE</span>
         </button>
-        <button *ngIf="userRole.Role==='qs' && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4"
+        <button *ngIf="(userRole.Role==='qs' || userRole.Role==='qs-pr')  && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4"
           style="width: 100%;margin-bottom: 1em;" ly-button bg="primary" raised type="button" (click)="onReopen()">
           <ly-icon>refresh</ly-icon>
           <span [className]="classes.labelButton">&nbsp; RE-OPEN</span>
         </button>
-        <button *ngIf="userRole.Role==='qs' && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4" style="width: 100%;" ly-button
+        <button *ngIf="(userRole.Role==='qs' || userRole.Role==='qs-pr')  && reportProgresses.ProgressStatus==2 && ncrReport.ReportStatus==4" style="width: 100%;" ly-button
           bg="calm" raised type="button" (click)="onClose()">
           <ly-icon>done_outline</ly-icon>
           <span [className]="classes.labelButton">&nbsp; CLOSE</span>
