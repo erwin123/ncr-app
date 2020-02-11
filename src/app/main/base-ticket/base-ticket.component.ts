@@ -345,6 +345,7 @@ export class BaseTicketComponent implements OnInit {
         break;
     }
     this.stateService.currentNCR.subscribe((s) => {
+      
       if (s == null) {
         this.transact.getReport(criteria).subscribe(res => {
           this.mapToView(res.find(f => f.Id == ReportID))
@@ -379,6 +380,7 @@ export class BaseTicketComponent implements OnInit {
         this.reportForm.get("Pic").enable();
       }
       if (this.ncrReport.Pic) {
+        
         if (this.pics.find(f => f.Username === this.ncrReport.Pic))
           this.reportForm.get('Pic').setValue(this.pics.find(f => f.Username === this.ncrReport.Pic).PicName);
       }

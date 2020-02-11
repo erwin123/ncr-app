@@ -6,8 +6,11 @@
     </h1>
   </div>
   <ly-grid container>
+    <ly-grid item col="12 12@XSmall" *ngIf="!data.length" style="margin-top:100px;text-align: center;">
+      Harap Tunggu
+    </ly-grid>
     <ly-grid item col="12 12@XSmall">
-      <div [className]="classes.table">
+      <div [className]="classes.table" *ngIf="data.length">
         <form style="padding: 0 10px 0 10px;">
           <ly-field fullWidth>
             <input lyNativeControl placeholder="Search" type='text' (input)="onChange($event)">

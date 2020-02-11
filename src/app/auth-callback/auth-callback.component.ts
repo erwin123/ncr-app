@@ -124,7 +124,7 @@ export class AuthCallbackComponent implements OnInit {
       this.initial.getMasterRules({ Role: aut[0].Role }),
       this.authService.getUserLogin({ Role: "qs" }),
       this.initial.getInitialMaster(),
-      this.initial.getMasterProject({})
+      this.initial.getMasterProject({}, true)
     ).subscribe(res => {
       this.ls.set("rules", res[0]);
       this.ls.set("qs", res[1].map(m => m.Username));

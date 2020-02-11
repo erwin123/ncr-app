@@ -65,6 +65,7 @@ export class LandingComponent implements OnInit {
     }
     this.transact.getReporting(criteria).subscribe(res => {
       this.sourceReports = res;
+      console.log(this.sourceReports);
       this.setDataBar(res);
       this.setDataPieRootCause(res);
       this.setDataPieScope(res);

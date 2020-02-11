@@ -36,16 +36,18 @@ export class InitialService {
       ));
   }
 
-  getMasterProject(criteria:any) {
+  getMasterProject(criteria:any, simple?) {
     let _headers = new HttpHeaders().set('Content-Type', 'application/json');
     const headers = _headers.append('x-access-token', "ad");
-    return this.httpClient.post<any>(this.config.Api.global_api + "/project/cr/", criteria,{ headers: headers }).pipe(
+    let uri = simple ? "/project/cr/simple":"/project/cr/"
+    return this.httpClient.post<any>(this.config.Api.global_api + uri, criteria,{ headers: headers }).pipe(
       map(
         res => {
           return res;
         }
       ));
   }
+
 
   postMasterProject(obj:any) {
     let _headers = new HttpHeaders().set('Content-Type', 'application/json');
