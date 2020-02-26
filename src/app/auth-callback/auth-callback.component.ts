@@ -36,7 +36,12 @@ export class AuthCallbackComponent implements OnInit {
               roleFromClaim = this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") ? this.authService.getClaims().role.find(f => f === "pic" || f === "qs" || f === "qs-pr" || f === "user") : "none";
             else
               roleFromClaim = this.authService.getClaims().role;
-            console.log(roleFromClaim);
+            
+            if (!aut[0].Project || roleFromClaim === 'qs') {
+              aut[0].Role = roleFromClaim;
+              this.insertingUser(this.authService.getClaims());
+              this.afterLoggedIn(aut);
+            }
             if (aut[0].Project || roleFromClaim === 'qs') {
               aut[0].Role = roleFromClaim;
               //console.log(this.authService.getClaims().role.find(f=>f==="pic" || f ==="qs" || f=== "qs-pr" || f==="user"));
@@ -119,6 +124,7 @@ export class AuthCallbackComponent implements OnInit {
   }
 
   afterLoggedIn(aut) {
+    console.log(aut);
     this.ls.set("user", aut[0]);
     forkJoin(
       this.initial.getMasterRules({ Role: aut[0].Role }),
